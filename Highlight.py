@@ -1,11 +1,12 @@
 import pandas as pd
 import sys
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QLabel, 
     QPushButton, QFileDialog, QVBoxLayout,
     QWidget, QApplication, QHBoxLayout,
-    QLineEdit, QGridLayout, QScrollArea
+    QLineEdit, QGridLayout, QScrollArea,
 )
 
 def searchData(file_path, search_string):
@@ -54,8 +55,8 @@ class MainWindow(QMainWindow):
         search_layout = QHBoxLayout()
         self.search_button.clicked.connect(self.search)
         
-        self.input_field.setStyleSheet("background-color: #141D27; border-radius: 8px; padding: 10px; color: white;")
-        self.search_button.setStyleSheet("width: 100px; border-radius: 8px; padding: 10px; color: white; background-color:#656565")
+        self.input_field.setStyleSheet("background-color: #141D27; font-size:16pt; border-radius: 8px; padding: 10px; color: white;")
+        self.search_button.setStyleSheet("width: 100px; border-radius: 8px; font-size:16pt; padding: 10px; color: white; background-color:#656565")
         
         search_layout.addWidget(self.input_field, 7)
         search_layout.addWidget(self.search_button, 3)
@@ -63,8 +64,8 @@ class MainWindow(QMainWindow):
         self.table_layout = QGridLayout()
         self.table_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.table_layout.setColumnStretch(0, 1)
-        self.table_layout.setColumnStretch(1, 15)
-        self.table_layout.setColumnStretch(2, 15)
+        self.table_layout.setColumnStretch(1, 20)
+        self.table_layout.setColumnStretch(2, 20)
         
         scroll_content = QWidget()
         scroll_content.setLayout(self.table_layout)
@@ -122,16 +123,16 @@ class MainWindow(QMainWindow):
             
     def search(self):
         self.clear_table()
-        if (self.file_path == ""): return
+        if (self.file_path == "" or self.input_field.text() == ""): return
         result = searchData(self.file_path, self.input_field.text())    
         
         questionTile = QLabel("Question")
         answerTile = QLabel("Answer")
         indexTile = QLabel("Index")
         
-        questionTile.setStyleSheet("font-weight: bold; font-size: 16px;")
-        answerTile.setStyleSheet("font-weight: bold; font-size: 16px;")
-        indexTile.setStyleSheet("font-weight: bold; font-size: 16px;")
+        questionTile.setStyleSheet("font-weight: bold; color: white; font-size: 16pt;")
+        answerTile.setStyleSheet("font-weight: bold; color: white; font-size: 16pt;")
+        indexTile.setStyleSheet("font-weight: bold; color: white; font-size: 16pt;")
         
         self.table_layout.addWidget(indexTile, 0, 0, alignment=Qt.AlignCenter)
         self.table_layout.addWidget(questionTile, 0, 1, alignment=Qt.AlignCenter)
@@ -142,14 +143,47 @@ class MainWindow(QMainWindow):
             answer = QLabel(result[i][1])
             index = QLabel(result[i][2])
             
-            question.setStyleSheet("background-color: #2F2F2F; border-radius: 8px; padding: 4px; color: white;")
-            answer.setStyleSheet("background-color: #607d29; border-radius: 8px; padding: 4px; color: white;")
+            question.setStyleSheet("background-color: #2F2F2F; border-radius: 8px; font-size: 16pt; padding: 4px; color: white;")
+            answer.setStyleSheet("background-color: #607d29; border-radius: 8px; font-size: 16pt; padding: 4px; color: white;")
+            index.setStyleSheet("padding: 4px; color: white; font-size: 16pt;")
+            
+            scroll_area = QScrollArea()
+            scroll_area.setWidgetResizable(True)
+            scroll_area.setWidget(question)
+            scroll_area.setStyleSheet("""
+                QScrollArea {
+                    background-color: #2F2F2F; 
+                    border-radius: 8px;
+                }                                      
+                QScrollBar:vertical {
+                    background: #2e2e2e;
+                    width: 6px;
+                    margin: 0px 0px 0px 0px;
+                    border-radius: 6px;
+                }
+                QScrollBar::handle:vertical {
+                    background: #606060;
+                    min-height: 20px;
+                    border-radius: 6px;
+                }
+                QScrollBar::handle:vertical:hover {
+                    background: #909090;
+                }
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                    height: 0px;
+                    background: none;
+                }
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                    background: none;
+                }
+            """)
             
             question.setWordWrap(True)
             answer.setWordWrap(True)
+            index.setWordWrap(True)
             
             self.table_layout.addWidget(index, i+1, 0)
-            self.table_layout.addWidget(question, i+1, 1)
+            self.table_layout.addWidget(scroll_area, i+1, 1)
             self.table_layout.addWidget(answer, i+1, 2)
         
     def center(self):
