@@ -18,7 +18,8 @@ def searchData(file_path, search_string):
             question = data.iloc[i]['CÂU HỎI']
             answerIndex = data.iloc[i]['ĐÁP ÁN ĐÚNG'] + 1
             answer = data.iloc[i, answerIndex]
-            result.append([question, str(answer), str(i + 1)])
+            result.append([question, str(answer), str(data.iloc[i]['ĐÁP ÁN ĐÚNG'])])
+            
     return result
 
 class MainWindow(QMainWindow):
@@ -49,6 +50,7 @@ class MainWindow(QMainWindow):
         self.file_label.setStyleSheet("background-color: #151E29; border-radius: 8px; padding: 10px; color: white;")
         self.file_button.setStyleSheet("width: 100px; border-radius: 8px; padding: 10px; color: white; background-color:#656565")
         
+        
         file_sellection_layout.addWidget(self.file_label, 7)
         file_sellection_layout.addWidget(self.file_button, 3)
         
@@ -63,8 +65,8 @@ class MainWindow(QMainWindow):
         
         self.table_layout = QGridLayout()
         self.table_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-        self.table_layout.setColumnStretch(0, 1)
-        self.table_layout.setColumnStretch(1, 20)
+        self.table_layout.setColumnStretch(0, 20)
+        self.table_layout.setColumnStretch(1, 1)
         self.table_layout.setColumnStretch(2, 20)
         
         scroll_content = QWidget()
@@ -134,8 +136,8 @@ class MainWindow(QMainWindow):
         answerTile.setStyleSheet("font-weight: bold; color: white; font-size: 16pt;")
         indexTile.setStyleSheet("font-weight: bold; color: white; font-size: 16pt;")
         
-        self.table_layout.addWidget(indexTile, 0, 0, alignment=Qt.AlignCenter)
-        self.table_layout.addWidget(questionTile, 0, 1, alignment=Qt.AlignCenter)
+        self.table_layout.addWidget(questionTile, 0, 0, alignment=Qt.AlignCenter)
+        self.table_layout.addWidget(indexTile, 0, 1, alignment=Qt.AlignCenter)
         self.table_layout.addWidget(answerTile, 0, 2, alignment=Qt.AlignCenter)
         
         for i in range(len(result)):
@@ -145,7 +147,7 @@ class MainWindow(QMainWindow):
             
             question.setStyleSheet("background-color: #2F2F2F; border-radius: 8px; font-size: 16pt; padding: 4px; color: white;")
             answer.setStyleSheet("background-color: #607d29; border-radius: 8px; font-size: 16pt; padding: 4px; color: white;")
-            index.setStyleSheet("padding: 4px; color: white; font-size: 16pt;")
+            index.setStyleSheet("background-color: #2F2F2F; border-radius: 8px; font-size: 16pt; padding: 4px; color: #B1C34E;")
             
             scroll_area = QScrollArea()
             scroll_area.setWidgetResizable(True)
@@ -182,8 +184,8 @@ class MainWindow(QMainWindow):
             answer.setWordWrap(True)
             index.setWordWrap(True)
             
-            self.table_layout.addWidget(index, i+1, 0)
-            self.table_layout.addWidget(scroll_area, i+1, 1)
+            self.table_layout.addWidget(scroll_area, i+1, 0)
+            self.table_layout.addWidget(index, i+1, 1, alignment=Qt.AlignCenter)
             self.table_layout.addWidget(answer, i+1, 2)
         
     def center(self):
