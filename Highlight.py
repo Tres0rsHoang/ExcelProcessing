@@ -73,15 +73,14 @@ class RemoveDuplicateWindow(QMainWindow):
         df = pd.read_excel(self.file_path, skiprows=8)
         col_b = df.columns[1]  
         df_unique = df.drop_duplicates(subset=[col_b], keep='first')
-
         rows_to_keep = df_unique.index.tolist()
         
         wb = load_workbook(self.file_path)
         ws = wb.active
 
-        all_data_rows = range(8, ws.max_row + 1)
+        all_data_rows = range(9, ws.max_row + 1)
         for row in reversed(all_data_rows):
-            if (row - 8) not in rows_to_keep:
+            if row - 10 > 0 and (row - 10) not in rows_to_keep:
                 ws.delete_rows(row)
 
         wb.save(f"{self.folder_path}/RemoveDuplicatesResult.xlsx")
